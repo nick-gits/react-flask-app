@@ -1,23 +1,35 @@
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
-  return (
+    const [status, setStatus] = useState(0);
+    const [message, setMessage] = useState( '' );
+
+    function doSomething(e) {
+        var x = "/secret?word=" + message;
+        fetch(x).then(res => res.json()).then(data => {
+          setStatus(data.status);
+        });
+        e.preventDefault();
+    }
+
+    return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <form onSubmit={doSomething}>
+            <input
+                type="text"
+                value={message}
+                placeholder="Enter the secret word"
+                onChange={e => setMessage(e.target.value)}
+            />
+            <button>Submit</button>
+        </form>
+        <header className="App-header">
+            <p> <strong>{message}</strong> </p>
+            Hint: The secret word is abc
+            <p>Status: {status}.</p>
+        </header>
     </div>
   );
 }
